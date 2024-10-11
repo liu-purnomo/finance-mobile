@@ -1,4 +1,4 @@
-import { LoaderComponent } from '@/components/ui/loading';
+import LoaderComponent from '@/components/ui/Loading';
 import { router, usePathname } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
