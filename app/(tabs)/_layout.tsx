@@ -1,45 +1,118 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Tabs } from 'expo-router';
-import React from 'react';
-
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
-import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
-
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
+import { MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
+import { Tabs } from 'expo-router';
+import { Image, Platform, View } from 'react-native';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
+        tabBarActiveTintColor: Colors['light'].tint,
       }}
+      initialRouteName="index"
     >
       <Tabs.Screen
-        name="index"
+        name="saving"
         options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'Saving',
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Octicons
+              name="briefcase"
+              size={20}
+              style={{ marginBottom: -3 }}
+              color={color}
+            />
+          ),
+          // tabBarLabel: () => {
+          //   return null;
+          // },
+        }}
+      />
+
+      <Tabs.Screen
+        name="budget"
+        options={{
+          title: 'Budget',
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name="apple-safari"
+              style={{ marginBottom: -3 }}
+              size={25}
+              color={color}
+            />
+          ),
+          // tabBarLabel: () => {
+          //   return null;
+          // },
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="home"
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'Home',
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <View
+              style={{
+                top: Platform.OS === 'ios' ? -10 : -20,
+                width: Platform.OS === 'ios' ? 50 : 60,
+                height: Platform.OS === 'ios' ? 50 : 60,
+                borderRadius: Platform.OS === 'ios' ? 25 : 30,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#0f6fec',
+                borderColor: 'white',
+                borderWidth: 2,
+              }}
+            >
+              <Image
+                source={require('@/assets/images/icon-white.png')}
+                style={{
+                  width: Platform.OS === 'ios' ? 40 : 45,
+                  height: Platform.OS === 'ios' ? 40 : 45,
+                }}
+                resizeMode="contain"
+              />
+            </View>
+          ),
+          tabBarLabel: () => {
+            return null;
+          },
         }}
       />
+      {/* <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="user-circle-o" size={20} color={color} />
+          ),
+          // tabBarLabel: () => {
+          //   return null;
+          // },
+        }}
+      /> */}
+      {/* <Tabs.Screen
+        name="setting"
+        options={{
+          title: 'Setting',
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Octicons
+              name="gear"
+              size={20}
+              style={{ marginBottom: -3 }}
+              color={color}
+            />
+          ),
+          // tabBarLabel: () => {
+          //   return null;
+          // },
+        }}
+      /> */}
     </Tabs>
   );
 }

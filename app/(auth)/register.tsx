@@ -2,8 +2,6 @@ import { AuthApi } from '@/api';
 import Input from '@/components/ui/Input';
 import LoaderComponent from '@/components/ui/Loading';
 import Colors from '@/constants/Colors';
-import { UserController } from '@/database';
-import { useAuthContext } from '@/utils/context/auth-context';
 import { HexToRgba } from '@/utils/functions/hexToRgba';
 import { Feather, Octicons } from '@expo/vector-icons';
 import { useMutation } from '@tanstack/react-query';
@@ -22,46 +20,74 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as Yup from 'yup';
 
-const initialValues = {
+const initialsValue: RegisterForm = {
   email: '',
   password: '',
+  name: '',
+  confirmPassword: '',
 };
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  const { setUserData } = useAuthContext();
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const { mutateAsync } = useMutation({
+    mutationKey: ['registerUser'],
+    mutationFn: AuthApi.register,
+  });
+
+  // loading state
   const [loading, setLoading] = useState(false);
 
   const formValidation = Yup.object().shape({
-    email: Yup.string().required().email().label('Email'),
-    password: Yup.string().required().min(5).label('Password'),
+    name: Yup.string()
+      .required('Name Wajib diisi')
+      .min(5, 'Minimal 5 Karakter'),
+    username: Yup.string()
+      .required('Username Wajib diisi')
+      .min(5, 'Minimal 5 Karakter'),
+    email: Yup.string().required('Password Wajib diisi').email().label('Email'),
+    password: Yup.string()
+      .required('Wajib diisi')
+      .test(
+        'contains-lowercase',
+        'Sertakan setidaknya satu huruf kecil',
+        (value) => /[a-z]/.test(value)
+      )
+      .test(
+        'contains-uppercase',
+        'Sertakan setidaknya satu huruf besar',
+        (value) => /[A-Z]/.test(value)
+      )
+      .test('contains-number', 'Sertakan setidaknya satu angka', (value) =>
+        /\d/.test(value)
+      )
+      .test(
+        'contains-special-character',
+        'Sertakan setidaknya satu karakter khusus (!@#$%&)',
+        (value) => /[!@#$%&]/.test(value)
+      )
+      .min(6, 'Minimal 6 karakter'),
+    confirmPassword: Yup.string().required('Konfirmasi password wajib diisi'),
   });
 
-  const { mutateAsync } = useMutation({
-    mutationKey: ['LoginUser'],
-    mutationFn: AuthApi.login,
-  });
-
-  const handleOnSubmit = async (values: DefaultFormValues) => {
+  const handleOnSubmit = async (value: RegisterForm) => {
     setLoading(true);
-    try {
-      const { email, password } = values;
-      const response = await mutateAsync({ email, password });
-      await UserController.createUser(response.data);
+    const { password, confirmPassword } = value;
 
-      setUserData(response.data);
-      router.replace('/(tabs)/home');
+    if (password !== confirmPassword) {
+      alert('Password tidak sama');
+      return;
+    }
+
+    try {
+      const user: SuccessResponse = await mutateAsync(value);
+      router.replace('/(auth)/activation');
     } catch (error: any) {
-      console.log(error, 'ERROR');
-      console.log(error?.response?.data?.message, 'ERROR');
-      if (error?.response?.data?.message === 'Account not active') {
-        Alert.alert(
-          'Error',
-          'Your account has not been activated yet, please activate now!'
-        );
-        router.replace('/(auth)/activation');
-      }
-      Alert.alert('Error', error?.response?.data?.message);
+      Alert.alert(
+        'Error',
+        error?.response?.data?.message || 'Something went wrong!'
+      );
     } finally {
       setLoading(false);
     }
@@ -69,6 +95,12 @@ export default function Login() {
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
+  const handleToggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(
+      (prevShowConfirmPassword) => !prevShowConfirmPassword
+    );
   };
 
   return (
@@ -88,17 +120,20 @@ export default function Login() {
               source={require('@/assets/images/shape.png')}
               className="absolute left-0 right-0 top-0 bottom-0 h-full w-full"
             />
+
             <Image
               source={require('@/assets/images/icon-white.png')}
               className="mx-auto mt-24 mb-6 h-20 w-40"
               resizeMode="contain"
             />
+
             <Text className="mb-9 text-center text-2xl font-bold text-sky-50">
-              Login
+              Register
             </Text>
+
             <View className="h-full rounded-t-3xl bg-white px-6 pt-10">
               <Formik
-                initialValues={initialValues}
+                initialValues={initialsValue}
                 onSubmit={handleOnSubmit}
                 validationSchema={formValidation}
               >
@@ -117,6 +152,25 @@ export default function Login() {
                     ) : (
                       <>
                         <View className="flex-row items-center rounded-3xl bg-sky-100 p-4">
+                          <Feather name="user" size={20} color={Colors.black} />
+                          <Input
+                            placeholder="Nama Lengkap"
+                            placeholderTextColor={HexToRgba(Colors.black, 0.4)}
+                            className="ml-2 flex-1 text-black"
+                            onChangeText={handleChange('name')}
+                            onBlur={handleBlur('name')}
+                            value={values.name}
+                            autoCapitalize="words"
+                          />
+                        </View>
+
+                        {touched.name && errors.name && (
+                          <View className="mt-2">
+                            <Text className="text-red-500">{errors.name}</Text>
+                          </View>
+                        )}
+
+                        <View className="mt-4 flex-row items-center rounded-3xl bg-sky-100 p-4">
                           <Feather name="mail" size={20} color={Colors.black} />
                           <Input
                             placeholder="Email"
@@ -128,11 +182,13 @@ export default function Login() {
                             inputMode="email"
                           />
                         </View>
+
                         {touched.email && errors.email && (
                           <View className="mt-2">
                             <Text className="text-red-500">{errors.email}</Text>
                           </View>
                         )}
+
                         <View className="mt-4 flex-row items-center rounded-3xl bg-sky-100 p-4">
                           <Feather name="lock" size={20} color={Colors.black} />
                           <Input
@@ -154,6 +210,7 @@ export default function Login() {
                             />
                           </TouchableOpacity>
                         </View>
+
                         {touched.password && errors.password && (
                           <View className="mt-2">
                             <Text className="text-red-500">
@@ -161,21 +218,43 @@ export default function Login() {
                             </Text>
                           </View>
                         )}
-                        <View className="mt-4 flex-row items-center justify-end">
+
+                        <View className="mt-4 flex-row items-center rounded-3xl bg-sky-100 p-4">
+                          <Feather name="lock" size={20} color={Colors.black} />
+                          <Input
+                            placeholder="Ulangi Password"
+                            placeholderTextColor={HexToRgba(Colors.black, 0.4)}
+                            className="ml-2 flex-1 text-black"
+                            onChangeText={handleChange('confirmPassword')}
+                            onBlur={handleBlur('confirmPassword')}
+                            value={values.confirmPassword}
+                            secureTextEntry={!showConfirmPassword}
+                          />
                           <TouchableOpacity
-                            onPress={() => router.replace('/(auth)/forgot')}
+                            onPress={handleToggleConfirmPasswordVisibility}
                           >
-                            <Text className="ml-2 text-sm text-black/30">
-                              Forgot password
-                            </Text>
+                            <Octicons
+                              name={showConfirmPassword ? 'eye' : 'eye-closed'}
+                              size={16}
+                              color={HexToRgba(Colors.black, 0.5)}
+                            />
                           </TouchableOpacity>
                         </View>
+
+                        {values.password !== values.confirmPassword && (
+                          <View className="mt-2">
+                            <Text className="text-red-500">
+                              Password tidak sama
+                            </Text>
+                          </View>
+                        )}
+
                         <TouchableOpacity
                           className="mt-6 items-center rounded-2xl bg-sky-500 py-4"
                           onPress={() => handleSubmit()}
                         >
                           <Text className="text-base font-semibold text-white">
-                            Login
+                            Mendaftar
                           </Text>
                         </TouchableOpacity>
                       </>
@@ -183,14 +262,15 @@ export default function Login() {
                   </>
                 )}
               </Formik>
-              <View className="mt-6 flex-row items-center justify-center">
+
+              <View className="mt-6 mb-6 flex-row items-center justify-center">
                 <TouchableOpacity
-                  onPress={() => router.replace('/(auth)/register')}
+                  onPress={() => router.replace('/(auth)/login')}
                 >
                   <Text className="text-sm text-black">
-                    Don't have an account?{' '}
+                    Sudah punya akun?{' '}
                     <Text className="text-main font-semibold text-sky-800">
-                      Register
+                      Login
                     </Text>
                   </Text>
                 </TouchableOpacity>

@@ -13,6 +13,7 @@ export class UserController {
   static async createUser(payload: UserSchema) {
     if (!source.isInitialized) await source.initialize();
 
+    console.log(payload, 'INI PAYLOAD');
     const user = new UserEntity();
 
     user.id = payload.id;

@@ -1,5 +1,5 @@
 import Button from '@/components/ui/Button';
-import { onboarding, OnboardingItem } from '@/constants/OnBoarding';
+import { OnboardingItem, onboarding } from '@/constants/OnBoarding';
 import { router } from 'expo-router';
 import React, { useRef, useState } from 'react';
 import {
@@ -8,9 +8,9 @@ import {
   Pressable,
   ScrollView,
   Text,
+  View,
   useColorScheme,
   useWindowDimensions,
-  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 

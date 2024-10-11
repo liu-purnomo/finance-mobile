@@ -1,3 +1,4 @@
+import { UserController } from '@/database';
 import axios from 'axios';
 
 const baseURL = process.env.EXPO_PUBLIC_SERVER_URL;
@@ -6,12 +7,13 @@ export const instance = axios.create({
   baseURL: `${baseURL}/api/v1`,
 });
 
-instance.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+instance.interceptors.request.use(async (config) => {
+  const user = await UserController.getUser();
 
-  (error) => {
-    return Promise.reject(error);
+  if (!user) {
+    return config;
   }
-);
+
+  config.headers.Authorization = `Bearer ${user.token}`;
+  return config;
+});

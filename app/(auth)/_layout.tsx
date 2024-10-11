@@ -1,24 +1,26 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Stack } from 'expo-router';
-import React from 'react';
+import { Stack } from "expo-router";
 
-import { useColorScheme } from '@/components/useColorScheme';
+// auth layout component
+export default function AuthLayoutNav() {
+  // const { user, loading } = useAuthentication();
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
+  // const pathName = usePathname();
 
-export default function AuthLayout() {
-  const colorScheme = useColorScheme();
+  // useEffect(() => {
+  //   if (!loading) {
+  //     if (user) {
+  //       router.replace("/(tabs)/home");
+  //     }
+  //   }
+  // }, [user, loading, pathName]);
 
   return (
     <Stack screenOptions={{ headerShown: false }} initialRouteName="login">
-      <Stack.Screen name="login" />
       <Stack.Screen name="on-board" />
+      <Stack.Screen name="login" />
+      <Stack.Screen name="register" />
+      <Stack.Screen name="forgot" />
+      <Stack.Screen name="reset" />
     </Stack>
   );
 }
