@@ -1,9 +1,13 @@
+import { AuthApi } from '@/api';
 import { View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
+import { loginAction } from '@/store/authStorage';
 import { Feather } from '@expo/vector-icons';
+import { useMutation } from '@tanstack/react-query';
 import { Formik } from 'formik';
 import { useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -14,6 +18,7 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from 'react-native';
+import { useDispatch } from 'react-redux';
 import * as Yup from 'yup';
 
 const initialValues = {
@@ -24,6 +29,7 @@ const initialValues = {
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const colorScheme = useColorScheme();
+  const dispatch = useDispatch();
 
   const formValidation = Yup.object().shape({
     email: Yup.string()
@@ -36,9 +42,28 @@ export default function Login() {
       .label('Password'),
   });
 
+  const { mutateAsync, isPending } = useMutation({
+    mutationKey: ['LoginUser'],
+    mutationFn: AuthApi.login,
+  });
+
   const handleOnSubmit = async (values: any) => {
-    console.log(values);
-    Alert.alert('Login Successful', `Welcome back, ${values.email}!`);
+    // console.log(values);
+    // Alert.alert('Login Successful', `Welcome back, ${values.email}!`);
+    try {
+      // Implement your login logic here
+      const { email, password } = values;
+      const response = await mutateAsync({ email, password });
+      dispatch(loginAction(response.data));
+
+      console.log(response, 'response');
+    } catch (error: any) {
+      // console.log();
+      Alert.alert(
+        'Error',
+        error?.response?.data?.message || 'Something went wrong'
+      );
+    }
     // Implement your login logic here
   };
 
@@ -78,10 +103,7 @@ export default function Login() {
               {touched.email && errors.email && (
                 <Text style={styles.errorText}>{errors.email}</Text>
               )}
-
-              {/* Wrapped TextInput and eye icon in a View */}
               <View style={styles.passwordContainer}>
-                {/* <View style={styles.passwordInputContainer}> */}
                 <TextInput
                   placeholder="Password"
                   placeholderTextColor={Colors[colorScheme ?? 'light'].text}
@@ -126,7 +148,13 @@ export default function Login() {
                   handleSubmit();
                 }}
               >
-                <Text style={styles.buttonText}>Login</Text>
+                {isPending ? (
+                  <ActivityIndicator
+                    color={Colors[colorScheme ?? 'light'].text}
+                  />
+                ) : (
+                  <Text style={styles.buttonText}>Login</Text>
+                )}
               </TouchableOpacity>
             </View>
           )}
@@ -156,10 +184,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: '100%',
   },
-  // passwordInputContainer: {
-  //   // position: 'relative',
-  //   height: 40,
-  // },
+
   passwordContainer: {
     position: 'relative',
     height: 60,
