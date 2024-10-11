@@ -104,13 +104,13 @@ export default function TabLayout() {
         }}
       /> */}
       <Tabs.Screen
-        name="setting"
+        name="account"
         options={{
-          title: 'Setting',
+          title: 'Account',
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <Octicons
-              name="gear"
+              name="person"
               size={23}
               style={{ marginBottom: -3 }}
               color={color}
