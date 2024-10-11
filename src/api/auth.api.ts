@@ -38,6 +38,15 @@ export class AuthApi {
     return data;
   }
 
+  static async changePassword(formValues: any) {
+    const { data } = await instance({
+      method: 'POST',
+      url: 'auth/change-password',
+      data: formValues,
+    });
+    return data;
+  }
+
   static async activation(formValues: any) {
     const { data } = await instance({
       method: 'POST',

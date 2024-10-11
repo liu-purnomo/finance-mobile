@@ -1,9 +1,24 @@
+import LoaderComponent from '@/components/ui/Loading';
 import Colors from '@/constants/Colors';
+import { useAuthentication } from '@/utils/hooks/useAuthentication';
 import { MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
-import { Tabs } from 'expo-router';
-import { Image, Platform, View } from 'react-native';
+import { router, Tabs } from 'expo-router';
+import { useEffect } from 'react';
+import { Platform, View } from 'react-native';
 
 export default function TabLayout() {
+  const { user, loading } = useAuthentication();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace('/(auth)/on-board');
+    }
+  }, [user, loading]);
+
+  if (loading) {
+    return <LoaderComponent />;
+  }
+
   return (
     <Tabs
       screenOptions={{
@@ -14,12 +29,12 @@ export default function TabLayout() {
       <Tabs.Screen
         name="saving"
         options={{
-          title: 'Saving',
+          title: 'Home',
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <Octicons
-              name="briefcase"
-              size={20}
+              name="home"
+              size={23}
               style={{ marginBottom: -3 }}
               color={color}
             />
@@ -37,9 +52,9 @@ export default function TabLayout() {
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons
-              name="apple-safari"
+              name="wallet-plus"
               style={{ marginBottom: -3 }}
-              size={25}
+              size={23}
               color={color}
             />
           ),
@@ -67,14 +82,7 @@ export default function TabLayout() {
                 borderWidth: 2,
               }}
             >
-              <Image
-                source={require('@/assets/images/icon-white.png')}
-                style={{
-                  width: Platform.OS === 'ios' ? 40 : 45,
-                  height: Platform.OS === 'ios' ? 40 : 45,
-                }}
-                resizeMode="contain"
-              />
+              <MaterialCommunityIcons name="plus" size={25} color="white" />
             </View>
           ),
           tabBarLabel: () => {
@@ -95,7 +103,7 @@ export default function TabLayout() {
           // },
         }}
       /> */}
-      {/* <Tabs.Screen
+      <Tabs.Screen
         name="setting"
         options={{
           title: 'Setting',
@@ -103,7 +111,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <Octicons
               name="gear"
-              size={20}
+              size={23}
               style={{ marginBottom: -3 }}
               color={color}
             />
@@ -112,7 +120,7 @@ export default function TabLayout() {
           //   return null;
           // },
         }}
-      /> */}
+      />
     </Tabs>
   );
 }
