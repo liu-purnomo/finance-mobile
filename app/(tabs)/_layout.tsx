@@ -1,7 +1,11 @@
 import LoaderComponent from '@/components/ui/Loading';
 import Colors from '@/constants/Colors';
 import { useAuthentication } from '@/utils/hooks/useAuthentication';
-import { MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
+import {
+  MaterialCommunityIcons,
+  MaterialIcons,
+  Octicons,
+} from '@expo/vector-icons';
 import { router, Tabs } from 'expo-router';
 import { useEffect } from 'react';
 import { Platform, View } from 'react-native';
@@ -27,7 +31,7 @@ export default function TabLayout() {
       initialRouteName="index"
     >
       <Tabs.Screen
-        name="saving"
+        name="home"
         options={{
           title: 'Home',
           headerShown: false,
@@ -64,9 +68,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="home"
+        name="transaction"
         options={{
-          title: 'Home',
+          title: 'Transaction',
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <View
@@ -90,19 +94,19 @@ export default function TabLayout() {
           },
         }}
       />
-      {/* <Tabs.Screen
-        name="profile"
+      <Tabs.Screen
+        name="saving"
         options={{
-          title: 'Profile',
+          title: 'Saving',
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <FontAwesome name="user-circle-o" size={20} color={color} />
+            <MaterialIcons name="wallet" size={24} color={color} />
           ),
           // tabBarLabel: () => {
           //   return null;
           // },
         }}
-      /> */}
+      />
       <Tabs.Screen
         name="account"
         options={{
