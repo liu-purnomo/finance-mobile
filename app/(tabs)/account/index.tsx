@@ -2,7 +2,7 @@ import { ProfileCard } from '@/components/cards/profile/profile.card';
 import { Text, View } from '@/components/ui/Themed';
 import { UserController } from '@/database';
 import { useAuthContext } from '@/utils/context/auth-context';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, Octicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -49,12 +49,21 @@ export default function Setting() {
           <TouchableOpacity onPress={() => router.replace('/(auth)/register')}>
             <View className="px-5 pb-4 border-t border-b border-gray-100 flex-row items-center justify-between gap-2">
               <View className="flex-row items-center gap-2">
-                <MaterialIcons
-                  name="add-shopping-cart"
-                  size={24}
-                  color={'gray'}
-                />
+                <MaterialIcons name="category" size={24} color={'gray'} />
                 <Text>Categories</Text>
+              </View>
+              <View className="flex-row items-center gap-2">
+                <MaterialIcons name="chevron-right" size={25} color="black" />
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View>
+          <TouchableOpacity onPress={() => router.replace('/(auth)/register')}>
+            <View className="px-5 pb-4 border-t border-b border-gray-100 flex-row items-center justify-between gap-2">
+              <View className="flex-row items-center gap-2">
+                <Octicons name="gear" size={24} color={'gray'} />
+                <Text>Setting</Text>
               </View>
               <View className="flex-row items-center gap-2">
                 <MaterialIcons name="chevron-right" size={25} color="black" />

@@ -56,7 +56,7 @@ export default function TabLayout() {
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons
-              name="wallet-plus"
+              name="wallet"
               style={{ marginBottom: -3 }}
               size={23}
               color={color}
@@ -100,7 +100,7 @@ export default function TabLayout() {
           title: 'Saving',
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <MaterialIcons name="wallet" size={24} color={color} />
+            <MaterialIcons name="save" size={24} color={color} />
           ),
           // tabBarLabel: () => {
           //   return null;
