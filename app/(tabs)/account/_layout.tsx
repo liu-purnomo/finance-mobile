@@ -7,13 +7,13 @@ export default function SettingPage() {
       <Stack.Screen
         name="index"
         options={{
-          title: 'Setting',
+          title: 'Account',
         }}
       />
       <Stack.Screen
         name="change-password"
         options={{
-          title: 'Ganti Password',
+          title: 'Change Password',
         }}
       />
     </Stack>
