@@ -6,6 +6,8 @@ export class WalletApi {
       method: 'GET',
       url: 'finance/wallet',
     });
+
+    return data;
   }
 
   static async create(formValues: any) {

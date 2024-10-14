@@ -4,9 +4,11 @@ import { UserController } from '@/database';
 import { useAuthContext } from '@/utils/context/auth-context';
 import { MaterialIcons, Octicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { useColorScheme } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function Setting() {
+  const isDark = useColorScheme() === 'dark';
   const { setUserData, userData } = useAuthContext();
   const handleLogout = async () => {
     await UserController.deleteUser();
@@ -20,11 +22,13 @@ export default function Setting() {
   };
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className={`flex-1 ${isDark ? 'bg-dark' : 'bg-white'}`}>
       <ScrollView className="pt-6 space-y-5">
         <ProfileCard />
         <TouchableOpacity onPress={() => router.replace('/(auth)/register')}>
-          <View className="px-5 pb-4 border-t border-b border-gray-100  flex-row items-center justify-between gap-2">
+          <View
+            className={`px-5 pb-5 border-b border-gray-100 flex-row items-center justify-between gap-2`}
+          >
             <View className="flex-row items-center gap-2">
               <MaterialIcons name="person" size={24} color="black" />
               <Text className="font-bold">My Profile</Text>

@@ -16,6 +16,12 @@ export default function SettingPage() {
           title: 'Change Password',
         }}
       />
+      <Stack.Screen
+        name="wallet"
+        options={{
+          title: 'Wallet',
+        }}
+      />
     </Stack>
   );
 }
