@@ -56,8 +56,8 @@ function Onboard({ index, item, x, screenWidth }: OnboardProps) {
       <Animated.Image
         source={item.image}
         style={{
-          width: screenWidth * 0.8,
-          height: screenWidth * 0.8,
+          width: screenWidth * 0.4,
+          height: screenWidth * 0.4,
           opacity: 1,
           transform: [{ translateY: imageTranslateY }],
         }}
@@ -128,7 +128,7 @@ export default function OnBoardingScreen() {
         />
         <Button onPress={() => router.replace('/(auth)/login')}>
           <Text className={`font-bold ${dark ? 'text-white' : 'text-sky-600'}`}>
-            Lewati
+            Skip
           </Text>
         </Button>
       </View>
@@ -176,7 +176,7 @@ export default function OnBoardingScreen() {
           onPress={() => router.replace('/(auth)/login')}
         >
           <View className="flex flex-row">
-            <Text className="font-bold text-sky-500">Masuk Sekarang</Text>
+            <Text className="font-bold text-sky-500">Login Now</Text>
           </View>
         </Pressable>
       )}

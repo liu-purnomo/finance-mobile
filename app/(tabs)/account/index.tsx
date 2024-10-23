@@ -74,6 +74,17 @@ export default function Setting() {
               </View>
             </View>
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleLogout()}>
+            <View className="px-5 pb-4 border-t border-b border-gray-100 flex-row items-center justify-between gap-2">
+              <View className="flex-row items-center gap-2">
+                <Octicons name="gear" size={24} color={'gray'} />
+                <Text>Logout</Text>
+              </View>
+              <View className="flex-row items-center gap-2">
+                <MaterialIcons name="chevron-right" size={25} color="black" />
+              </View>
+            </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
